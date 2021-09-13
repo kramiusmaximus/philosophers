@@ -3,6 +3,8 @@
 #include <pthread.h>
 #include "sauce.h"
 
+t_params    params;
+
 void error_exit(char *err_msg, int exit_n) {
     printf("%s\n", err_msg);
     exit(exit_n);
@@ -35,15 +37,74 @@ int parse_params(char **vargs, t_params *params) {
     }
     else
         params->optional_argument_specified = 0;
+    return (0);
+}
+
+int prepare_feast(t_params *params) {
+    int *forks;
+
+    if (!forks == malloc(sizeof(int) * params->number_of_philosophers))
+        return (1);
+    return (0);
+}
+
+int wakeup_philosopher(const int *id_ref) {
+	int id = *id_ref;
+
+	// wake up
+	printf("Philosopher %d: I woke up!!\n", id + 1);
+
+	if (1) {// not dead
+		// think
+		printf("Philosopher %d: I'm now thinking very hard about the human condition and the many contradictions of man\n", id + 1);
+
+		//lock mutex here
+
+		// eat
+		printf("Philosopher %d: I'm gonna eat now. Zeus!!!! These persian kid's kidney's taste phenomenal!\n", id + 1);
+
+		//unlock mutex hear
+
+		// sleep
+		printf("Philosopher %d: ...zZZZZzzZZZZZzzz...\n", id + 1);
+	}
+	return (0);
+}
+
+int begin_feast(t_params *params) {
+    pthread_mutex_t mutexes[params->number_of_philosophers / 2 + (params->number_of_philosophers % 2 == 1 ? 1 : 0)];
+    pthread_t		*philosophers[params->number_of_philosophers];
+    int				args[params->number_of_philosophers];
+    int				i;
+
+    // start threads
+    i = 0;
+    while (i < params->number_of_philosophers) {
+    	args[i] = i;
+    	int rt = pthread_create( &philosophers[i], NULL, &wakeup_philosopher, &args[i]);
+
+		if (rt)
+			error_exit("Thread creation failed", 1);
+    	i++;  // do I need to manually delete threads in case of an error??
+    }
+
+    // wait on threads
+    i = 0;
+    while (i < params->number_of_philosophers) {
+    	pthread_join(philosophers[i], NULL);
+    	i++;
+    }
+    return (0);
 }
 
 int main(int nargs, char **vargs) {
-    t_params    params;
     if (nargs < 5)
-        error_exit("Incorrect number of arguments entered. Enter 4 arguments please, 5 with optional argument.", 1)
+        error_exit("Incorrect number of arguments entered. Enter 4 arguments please, 5 with optional argument.", 1);
     if (parse_params(vargs, &params))
-        error_exit("An error occured whilst allocating heap memory with malloc... we're soorryyyyyy")
+        error_exit("An error occured whilst allocating heap memory with malloc... we're soorryyyyyy", 1);
     if (!valid_arguments(&params))
-        error_exit("One or more arguments entered is invalid", 1)
-
+        error_exit("One or more arguments entered is invalid", 1);
+    if (prepare_feast(&params))
+        error_exit("Malloc failed!", 1);
+    begin_feast(&params);
 }

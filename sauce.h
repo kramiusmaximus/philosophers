@@ -8,6 +8,7 @@ typedef struct  s_params {
     float       time_to_sleep;
     int         optional_argument_specified;
     int         number_of_times_each_philosopher_must_eat;
+    int         forks[];
 }               t_params;
 
 #endif

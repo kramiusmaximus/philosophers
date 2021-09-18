@@ -67,3 +67,18 @@ int *fork_init() {
 	}
 	return (forks);
 }
+
+int milli_sleep(int milli_sec) {
+	int i;
+	long start;
+
+	start = curr_time_mill();
+	while (1) {
+		if (curr_time_mill() - start >= (long) milli_sec) {
+			break ;
+		}
+		if (usleep(1))
+			return (1);
+	}
+	return (0);
+}

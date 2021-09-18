@@ -26,7 +26,6 @@ int picked_up_forks(int id, long wake_up_time) {
 		return (1);
 	}
 	pthread_mutex_unlock(&pick_up_forks_mutex);
-	//printf("philosopher %d says forks unavailable\n", id);
 	return (0);
 }
 
@@ -41,7 +40,7 @@ int eat(int id, long wake_up_time, int *times_eaten, long last_meal_time) {
 	if (check_stopping_conditions(wake_up_time, last_meal_time, id))
 		return (1);
 	printf("[%-5ld ms] Philosopher %d: is eating\n", curr_time_mill() - wake_up_time, id + 1);
-	if ((usleep(1000 * params.time_to_eat)))
+	if ((milli_sleep(params.time_to_eat)))
 		error_exit("usleep failed", 1);
 	if (params.optional_argument_specified && *times_eaten >= params.number_of_times_each_philosopher_must_eat) {
 		return (finish_eating(id, wake_up_time));
@@ -53,7 +52,7 @@ void shleep(int id, long wake_up_time, long last_meal_time) {
 	if (check_stopping_conditions(wake_up_time, last_meal_time, id))
 		pthread_exit(NULL);
 	printf("[%-5ld ms] Philosopher %d: is sleeping\n", curr_time_mill() - wake_up_time, id + 1);
-	if ((usleep(1000 * params.time_to_sleep)))
+	if ((milli_sleep(params.time_to_sleep)))
 		error_exit("usleep failed", 1);
 }
 

@@ -40,5 +40,6 @@ void think(int id, long wake_up_time, long last_meal_time);
 int die(long tod, int id);
 int forks_available(int id);
 void pick_up_forks(int id, long wake_up_time);
+int milli_sleep(int milli_sec);
 
 #endif
